@@ -135,6 +135,8 @@ def suggest_execution_threads() -> int:
     # Get CPU count
     cpu_count = os.cpu_count() or 4
     
+    if 'OpenVINOExecutionProvider' in modules.globals.execution_providers:
+        return 1
     if 'DmlExecutionProvider' in modules.globals.execution_providers:
         return 1
     if 'ROCMExecutionProvider' in modules.globals.execution_providers:

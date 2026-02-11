@@ -1,10 +1,21 @@
 # --- START OF FILE globals.py ---
 
 import os
+import sys
 from typing import List, Dict, Any
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-WORKFLOW_DIR = os.path.join(ROOT_DIR, "workflow")
+if hasattr(sys, '_MEIPASS'):
+    # INTERNAL_ROOT is where the code and bundled resources (UI, locales) are
+    INTERNAL_ROOT = sys._MEIPASS
+    # EXTERNAL_ROOT is where the executable lives (used for persistent models/cache)
+    EXTERNAL_ROOT = os.path.dirname(sys.executable)
+else:
+    INTERNAL_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    EXTERNAL_ROOT = INTERNAL_ROOT
+
+ROOT_DIR = INTERNAL_ROOT
+MODELS_DIR = os.path.join(EXTERNAL_ROOT, "models")
+WORKFLOW_DIR = os.path.join(INTERNAL_ROOT, "modules", "workflow")
 
 file_types = [
     ("Image", ("*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp")),

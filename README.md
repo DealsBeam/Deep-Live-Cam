@@ -275,7 +275,7 @@ pip install onnxruntime-directml==1.21.0
 python run.py --execution-provider directml
 ```
 
-**OpenVINO™ Execution Provider (Intel)**
+**OpenVINO™ Execution Provider (Intel Arc/Integrated GPUs)**
 
 1. Install dependencies:
 
@@ -289,6 +289,23 @@ pip install onnxruntime-openvino==1.21.0
 ```bash
 python run.py --execution-provider openvino
 ```
+
+Alternatively, use the provided batch script:
+```bash
+run-openvino.bat
+```
+
+**Note for Intel Arc Users:** The first run might take a minute as OpenVINO optimizes the models for your GPU. Subsequent runs will be much faster due to the built-in model caching.
+
+### Deployment for Intel Arc (Executable)
+
+If you want to create a standalone executable for distribution:
+
+1. Install PyInstaller: `pip install pyinstaller`
+2. Run the build script: `python build_executable.py`
+3. The executable will be in the `dist` folder.
+
+This is optimized to bundle OpenVINO components and use Intel GPUs by default.
 </details>
 
 ## Usage
