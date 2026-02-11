@@ -25,9 +25,25 @@ def get_face_analyser() -> Any:
         with FACE_ANALYSER_LOCK:
             # Double-check after acquiring lock
             if FACE_ANALYSER is None:
+                providers_config = []
+                for p in modules.globals.execution_providers:
+                    if p == "OpenVINOExecutionProvider":
+                        # OpenVINO optimization for face analysis
+                        providers_config.append((
+                            "OpenVINOExecutionProvider",
+                            {
+                                "device_type": "GPU",
+                                "precision": "FP16",
+                                "num_streams": "1"
+                            }
+                        ))
+                    else:
+                        providers_config.append(p)
+
                 FACE_ANALYSER = insightface.app.FaceAnalysis(
                     name='buffalo_l',
-                    providers=modules.globals.execution_providers
+                    root=modules.globals.MODELS_DIR,
+                    providers=providers_config
                 )
                 FACE_ANALYSER.prepare(ctx_id=0, det_size=(640, 640))
     return FACE_ANALYSER

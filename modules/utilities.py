@@ -299,4 +299,8 @@ def conditional_download(download_directory_path: str, urls: List[str]) -> None:
 
 
 def resolve_relative_path(path: str) -> str:
+    import sys
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.abspath(os.path.join(sys._MEIPASS, "modules", path))
+    # During development, it's relative to the modules directory
     return os.path.abspath(os.path.join(os.path.dirname(__file__), path))

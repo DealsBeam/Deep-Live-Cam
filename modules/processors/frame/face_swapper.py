@@ -37,13 +37,10 @@ FRAME_SKIP_COUNTER = 0
 ADAPTIVE_QUALITY = True
 # --- END: Mac M1-M5 Optimizations ---
 
-abs_dir = os.path.dirname(os.path.abspath(__file__))
-models_dir = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(abs_dir))), "models"
-)
+models_dir = modules.globals.MODELS_DIR
 
 def pre_check() -> bool:
-    download_directory_path = abs_dir
+    download_directory_path = models_dir
     conditional_download(
         download_directory_path,
         [
@@ -95,6 +92,20 @@ def get_face_swapper() -> Any:
                                 "EnableOnSubgraphs": 1,
                                 "RequireStaticShapes": 0,
                                 "MaximumCacheSize": 1024 * 1024 * 512,  # 512MB cache
+                            }
+                        ))
+                    elif p == "OpenVINOExecutionProvider":
+                        # Optimized OpenVINO configuration for Intel Arc/Integrated GPUs
+                        ov_cache_dir = os.path.join(models_dir, "openvino_cache")
+                        os.makedirs(ov_cache_dir, exist_ok=True)
+
+                        providers_config.append((
+                            "OpenVINOExecutionProvider",
+                            {
+                                "device_type": "GPU",  # Prioritize Intel GPU
+                                "precision": "FP16",
+                                "cache_dir": ov_cache_dir,
+                                "num_streams": "1",  # Better for real-time latency
                             }
                         ))
                     else:
